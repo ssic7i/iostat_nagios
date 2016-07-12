@@ -1,3 +1,5 @@
+_author_ = 'Serhii Sheiko'
+# Licence: MIT
 import subprocess
 import sys
 
