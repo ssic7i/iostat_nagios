@@ -4,8 +4,10 @@ import subprocess
 import sys
 
 arguments = sys.argv
-base_command = 'iostat.bat'
+base_command = 'iostat'
 base_params = ['-d', '-m']
+
+is_times = False
 
 def parce_args():
     run_args = []
@@ -13,6 +15,7 @@ def parce_args():
     extend_output = False
     device_selected = False
     pass_iteration = False
+    times_arr = []
 
     for i in range(0, len(arguments)):
         if arguments[i].strip().endswith('py') or arguments[i].strip().endswith('pyc') or arguments[i].strip().endswith('.exe'):
@@ -27,6 +30,10 @@ def parce_args():
             run_args.append(arguments[i+1])
             device_selected = True
             pass_iteration = True
+        elif arguments[i] == '-time':
+            times_arr.append(arguments[i+1].split(',')[0])
+            times_arr.append('2')
+            pass_iteration = True
         elif arguments[i] == '-h':
             help_message()
         else:
@@ -37,7 +44,7 @@ def parce_args():
         sys.stderr.write('Device not selected. Use power of -d key.')
         sys.exit(128)
 
-    return run_args, check_args
+    return run_args + times_arr, check_args
 
 
 def help_message():
@@ -62,7 +69,6 @@ def get_output(result_command):
     for i in range(0, len(splited_lines)):
         if splited_lines[i].startswith('Device:'):
             data_line = splited_lines[i+1]
-            break
     return data_line.split()
 
 def check_data(data_in, check_values):
